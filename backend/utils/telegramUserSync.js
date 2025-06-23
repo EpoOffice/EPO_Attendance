@@ -56,9 +56,16 @@ async function pollTelegramUpdates(offset = 0) {
 
                 console.log("Match:", match);
 
-                const nameToStore = match ? match.name : telegramName;
-                await TelegramUser.create({ name: nameToStore, chat_id });
-                console.log(`Added Telegram user: ${nameToStore} (${chat_id})`);
+                const nameToStore = match?.name ?? null;
+                if(nameToStore){
+                    await TelegramUser.create({ name: nameToStore, chat_id });
+                    console.log(`Added Telegram user: ${nameToStore} (${chat_id})`);
+                }
+                else {
+                    console.log(`Do Not Added Telegram user: ${nameToStore} (${chat_id})`);
+                }
+
+            
             }
         }
 

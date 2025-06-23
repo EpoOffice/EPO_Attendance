@@ -25,6 +25,8 @@ const { startTelegramUserSync } = require('./utils/telegramUserSync');
 
 const PORT = process.env.PORT || 5000;
 
+app.use(express.static('dist'));
+
 // app.use(cors());
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
@@ -35,6 +37,9 @@ app.use(cors({
 app.use(helmet());
 
 app.use(express.json());
+
+
+
 app.use('/api/attendance', attendanceRoutes);
 
 
@@ -46,12 +51,12 @@ startTelegramUserSync();  // Starts polling in the background automatically
 
 // At minute 0 past every hour from 10 through 18 (10 AM - 6 PM) every day
 // 0 10-20 * * *
-cron.schedule('0,15 10-21 * * *', async () => {
+cron.schedule('0,5 10-24 * * 1-6', async () => {
   try {
     console.log('Running attendance sync cron job (office hours)...');
     const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
     const res = await axios.get(`${BASE_URL}/api/attendance/sync`);
-    console.log('Attendance sync result:', res.data);
+    // console.log('Attendance sync result:', res.data);
   } catch (error) {
     console.error('Attendance sync cron failed:', error.response?.data || error.message);
   }
@@ -61,7 +66,7 @@ cron.schedule('0,15 10-21 * * *', async () => {
 
 
 
-cron.schedule('0,30 18-20 * * *', async () => {
+cron.schedule('0,10 18-22 * * 1-6', async () => {
   const today = DateTime.now().setZone('Asia/Kolkata').toFormat('yyyy-MM-dd');
 
   console.log("today:", today);
@@ -100,7 +105,9 @@ cron.schedule('0,30 18-20 * * *', async () => {
 
 
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port http://localhost:${PORT}`)
+});
 
 // app.listen(PORT, "0.0.0.0", () => {
 //   console.log(`Backend running on http://0.0.0.0:${PORT}`);

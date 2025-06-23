@@ -7,7 +7,6 @@ const { DateTime } = require('luxon');
 const bulkData = require('../../attendance_dummy.json');
 
 
-
 const EMPLOYEE = [
   "ANITA DORJEE",
   "ANISHA LYNGDOH",
@@ -30,13 +29,13 @@ const EMPLOYEE = [
   "RAJESH KUMAR THAKUR",
   "SANJAY THAPA",
   "SAFIRALIN",
-  "SALEEM",
   "ROSHAN",
   "SICOVONTRITCHZ D THANKHIEW",
   "TITU BHOWMICK",
   "WANHUNLANG KHARSATI",
   "YUMNAM JACKSON SINGH",
-  "JUDHVEER"
+  "SHANLANG",
+  "IARAP"
 ];
 
 
@@ -99,14 +98,14 @@ exports.syncAttendance = async (req, res) => {
       photo: header.findIndex(h => h.toLowerCase().includes('photo')),
     };
 
-    console.log("COlS: ", COLS);
+    // console.log("COlS: ", COLS);
 
 
     // Map for each employee's attendance (per day)
     const attendanceMap = {};
     // Current IST date/time
     let nowIST = DateTime.now().setZone('Asia/Kolkata');
-    console.log("nowIST: ", nowIST);
+    // console.log("nowIST: ", nowIST);
     const fixedTimeIST = nowIST.set({
       hour: 13,  // 1 PM (24-hour format)
       minute: 0,
@@ -136,10 +135,11 @@ exports.syncAttendance = async (req, res) => {
       if (dateStr !== todayStr) continue; // Process ONLY today's records
 
       let name = row[COLS.name]?.trim().toUpperCase();
-      console.log("name: ", name);
+      // console.log("name: ", name);
       let action = row[COLS.action]?.toUpperCase();
       const location = row[COLS.location]?.toUpperCase();
-      console.log("action: ", action);
+      // console.log("action: ", action);
+
       if (!name || !action || !location) {
         // skip
         continue;
@@ -172,7 +172,7 @@ exports.syncAttendance = async (req, res) => {
           attendanceMap[name].check_out_time = timestampRaw;
         }
       }
-      console.log("attendanceMap[name]: ", attendanceMap[name]);
+      // console.log("attendanceMap[name]: ", attendanceMap[name]);
     }
 
     // 2. AUTO-MARK ABSENT, LATE, AND SHIFT CALCULATION
@@ -233,7 +233,7 @@ exports.syncAttendance = async (req, res) => {
 
       // PRESENT/LATE
       const checkInDate = parseCustomTimestamp(check_in_time);
-      console.log("checkInDate: ", checkInDate);
+      // console.log("checkInDate: ", checkInDate);
       if (checkInDate > officeStart) {
         const late_time_calculation = Math.round(checkInDate.diff(officeStart, 'minutes').minutes);
         // Convert minutes to hours and remaining minutes
@@ -241,7 +241,7 @@ exports.syncAttendance = async (req, res) => {
         const minutes = late_time_calculation % 60;
         late_minutes = `${hours}h ${minutes}min`;
 
-        console.log("late_minutes: ", late_minutes);
+        // console.log("late_minutes: ", late_minutes);
 
         status = 'LATE';
       } else {
@@ -250,15 +250,15 @@ exports.syncAttendance = async (req, res) => {
       }
 
       // Auto check-out at 6 PM if not out and now is after 10 PM
-      console.log("nowIST.hour: ", nowIST.hour);
-      console.log(typeof nowIST.hour);
+      // console.log("nowIST.hour: ", nowIST.hour);
+      // console.log(typeof nowIST.hour);
       if (!check_out_time && nowIST.hour >= 24) {
         check_out_time = nowIST.toFormat('dd/LL/yyyy') + ' 18:00:00';
       }
 
       // Calculate shift time if check-out exists
-      console.log("check_in_time: ", check_in_time);
-      console.log("check_out_time: ", check_out_time);
+      // console.log("check_in_time: ", check_in_time);
+      // console.log("check_out_time: ", check_out_time);
 
       if (check_in_time && check_out_time) {
         const checkOutDate = parseCustomTimestamp(check_out_time);
@@ -326,7 +326,7 @@ exports.listAttendance = async (req, res) => {
       // Default: fetch today (IST)
       const nowIST = DateTime.now().setZone('Asia/Kolkata');
       const todayStr = getDateStringFromDate(nowIST);
-      console.log("todayStr: ", todayStr);
+      // console.log("todayStr: ", todayStr);
       where.date = todayStr;
     }
     if (name) {
@@ -400,9 +400,9 @@ exports.absentList = async (req, res) => {
 
     const nowIST = DateTime.now().setZone('Asia/Kolkata');
     const date = req.query.date || getDateStringFromDate(nowIST);
-    console.log("Date: ", req.query.date);
+    // console.log("Date: ", req.query.date);
     const month = req.query.month || null;
-    console.log("Month: ", month);
+    // console.log("Month: ", month);
     const name = req.query.name || null;
 
     let where = { status: 'ABSENT' };
@@ -449,7 +449,7 @@ exports.getEmployees = (req, res) => {
 // bulkInsertAttendance
 exports.bulkInsertAttendance = async (req, res) => {
   try {
-    const data = req.body.data || bulkData;
+    const data = bulkData || req.body.data;
     if (!Array.isArray(data) || !data.length) {
       return res.status(400).json({ error: 'Invalid data format' });
     }

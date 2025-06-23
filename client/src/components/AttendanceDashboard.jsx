@@ -7,6 +7,8 @@ import AttendanceTable from './AttendanceTable';
 import PaginationControls from './PaginationControls';
 import AbsentEmployees from './AbsentEmployees';
 
+const BASE_URL=process.env.BASE_URL || 'http://192.168.1.82:5000' || 'http://localhost:5173';
+
 
 const AttendanceDashboard = () => {
     const [attendance, setAttendance] = useState([]);
@@ -24,16 +26,16 @@ const AttendanceDashboard = () => {
         try {
             // Main attendance list (with pagination and filters)
             const params = { ...pagination, ...filter };
-            const attendanceRes = await axios.get('http://localhost:5000/api/attendance', { params });
+            const attendanceRes = await axios.get(`${BASE_URL}/api/attendance`, { params });
             const { data, total, totalPages } = attendanceRes.data;
             setAttendance(data);
             setPagination(prev => ({ ...prev, total, totalPages }));
 
              // Stats summary
-            const summaryRes = await axios.get('http://localhost:5000/api/attendance/summary', { params: { date: filter.date } });
+            const summaryRes = await axios.get(`${BASE_URL}/api/attendance/summary`, { params: { date: filter.date } });
             setSummary(summaryRes.data);
             // Absent employees
-            const absentRes = await axios.get('http://localhost:5000/api/attendance/absent', { params: { date: filter.date, month: filter.month, name: filter.name } });
+            const absentRes = await axios.get(`${BASE_URL}/api/attendance/absent`, { params: { date: filter.date, month: filter.month, name: filter.name } });
             setAbsentEmployees(absentRes.data);
 
             // const employeesRes = await axios.get('http://localhost:5000/api/attendance/employees');
