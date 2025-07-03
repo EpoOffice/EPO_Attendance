@@ -35,7 +35,9 @@ const EMPLOYEE = [
   "WANHUNLANG KHARSATI",
   "YUMNAM JACKSON SINGH",
   "SHANLANG",
-  "IARAP"
+  "IARAP",
+  "Shanbor",
+  "Ewan Ha I Shylla"
 ];
 
 
@@ -179,7 +181,7 @@ exports.syncAttendance = async (req, res) => {
     // 2. Fill/Upsert Attendance Table per employee for today (IST)
     // Define office timings in IST
     const officeStart = nowIST.set({ hour: 10, minute: 15, second: 0, millisecond: 0 }); // 10:00 AM
-    const absentCutoff = nowIST.set({ hour: 12, minute: 0, second: 0, millisecond: 0 }); // 12:00 PM
+    const absentCutoff = nowIST.set({ hour: 16, minute: 0, second: 0, millisecond: 0 }); // 4:00 PM
 
     for (const name of EMPLOYEE) {
       const empData = attendanceMap[name] || {};
