@@ -30,14 +30,13 @@ const EMPLOYEE = [
   "SANJAY THAPA",
   "SAFIRALIN",
   "ROSHAN",
-  "SICOVONTRITCHZ D THANKHIEW",
+  "SICOVONTRITCHZ D THANGKHIEW",
   "TITU BHOWMICK",
   "WANHUNLANG KHARSATI",
   "YUMNAM JACKSON SINGH",
   "SHANLANG",
-  "IARAP",
-  "Shanbor",
-  "Ewan Ha I Shylla"
+  "SHANBOR",
+  "EWAN HA I SHYLLA"
 ];
 
 
@@ -254,7 +253,7 @@ exports.syncAttendance = async (req, res) => {
       // Auto check-out at 6 PM if not out and now is after 10 PM
       // console.log("nowIST.hour: ", nowIST.hour);
       // console.log(typeof nowIST.hour);
-      if (!check_out_time && nowIST.hour >= 24) {
+      if (!check_out_time && nowIST.hour >= 23) {
         check_out_time = nowIST.toFormat('dd/LL/yyyy') + ' 18:00:00';
       }
 

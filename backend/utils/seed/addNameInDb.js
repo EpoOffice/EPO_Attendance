@@ -33,10 +33,9 @@ const seedDoers = async () => {
 //   "WANHUNLANG KHARSATI",
 //   "YUMNAM JACKSON SINGH",
 //   "SHANLANG",
-//   "IARAP",
 // ];
 
-const names = ["Shanbor", "Ewan Ha I Shylla"];
+const names = ["SHANBOR", "EWAN HA I SHYLLA"];
 
     const doers = names.map(name => ({
       name,

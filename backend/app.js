@@ -21,6 +21,16 @@ const { sendTelegramMessage } = require('./utils/telegram');
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const { DateTime } = require('luxon');
 const bot = require("./utils/bot");
+const blocked = require('blocked-at');
+
+
+
+blocked((time, stack) => {
+  console.log(`Blocked for ${time}ms, operation started here:`, stack);
+}, { threshold: 100 }); // Warns if blocked for >100ms
+
+
+
 
 const PORT = process.env.PORT || 5000;
 
@@ -48,7 +58,7 @@ app.use('/api/attendance', attendanceRoutes);
 // 0 10-20 * * *
 
 // Morning + Early Afternoon: every 5 minutes from 9:00 to 13:55
-cron.schedule('*/5 9-13 * * *', async () => {
+cron.schedule('*/5 9-13 * * 1-6', async () => {
   try {
     console.log('Running attendance sync cron job (office hours)...');
     const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
@@ -61,20 +71,7 @@ cron.schedule('*/5 9-13 * * *', async () => {
 
 
 // Evening: every 5 minutes from 17:00 to 20:55
-cron.schedule('*/5 17-20 * * *', async () => {
-  try {
-    console.log('Running attendance sync cron job (office hours)...');
-    const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
-    const res = await axios.get(`${BASE_URL}/api/attendance/sync`);
-    console.log('Attendance sync result:', res.data);
-  } catch (error) {
-    console.error('Attendance sync cron failed:', error.response?.data || error.message);
-  }
-});
-
-// Once at 21:00
-
-cron.schedule('0 21 * * *', async () => {
+cron.schedule('*/5 17-20 * * 1-6', async () => {
   try {
     console.log('Running attendance sync cron job (office hours)...');
     const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
@@ -86,10 +83,35 @@ cron.schedule('0 21 * * *', async () => {
 });
 
 
+cron.schedule('*/30 21-23 * * 1-6', async () => {
+  try {
+    console.log('Running attendance sync cron job (office hours)...');
+    const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
+    const res = await axios.get(`${BASE_URL}/api/attendance/sync`);
+    console.log('Attendance sync result:', res.data);
+  } catch (error) {
+    console.error('Attendance sync cron failed:', error.response?.data || error.message);
+  }
+});
 
 
 
-cron.schedule('0,15 18-20 * * *', async () => {
+cron.schedule('0 21 * * 1', async () => {
+  try {
+    console.log('Running attendance sync cron job (for all days)...');
+    const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
+    const res = await axios.get(`${BASE_URL}/api/attendance/syncAll`);
+    console.log('Attendance sync result:', res.data);
+  } catch (error) {
+    console.error('Attendance sync cron failed:', error.response?.data || error.message);
+  }
+});
+
+
+
+
+
+cron.schedule('0,15 18-22 * * 1-6', async () => {
   const today = DateTime.now().setZone('Asia/Kolkata').toFormat('yyyy-MM-dd');
 
   console.log("today:", today);
@@ -123,6 +145,7 @@ cron.schedule('0,15 18-20 * * *', async () => {
 
   console.log('Telegram reminders sent for missing checkouts');
 });
+
 
 
 
