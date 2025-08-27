@@ -18,7 +18,6 @@ const seedDoers = async () => {
 //   "EVAMEDALYNE LANGSTANG",
 //   "FANNY",
 //   "HIMANI",
-//   "JENNIFER JYRWA",
 //   "JOEY",
 //   "KIRAN DAS",
 //   "MONICA LYNGDOH",
@@ -32,7 +31,6 @@ const seedDoers = async () => {
 //   "TITU BHOWMICK",
 //   "WANHUNLANG KHARSATI",
 //   "YUMNAM JACKSON SINGH",
-//   "SHANLANG",
 // ];
 
 const names = ["SHANBOR", "EWAN HA I SHYLLA"];
