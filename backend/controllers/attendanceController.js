@@ -7,35 +7,7 @@ const { DateTime } = require('luxon');
 const bulkData = require('../../attendance_dummy.json');
 
 
-const EMPLOYEE = [
-  "ANITA DORJEE",
-  "ANISHA LYNGDOH",
-  "ALVIN KHARBAMON",
-  "AIDAHUNLIN NALLE JYRWA",
-  "BANROILANG",
-  "BANSHANLANG",
-  "BANTYNSHAIN LYNGDOH",
-  "BHAGYASHREE SINHA",
-  "DORIS",
-  "EVAMEDALYNE LANGSTANG",
-  "FANNY",
-  "HIMANI",
-  "JOEY",
-  "KIRAN DAS",
-  "MONICA LYNGDOH",
-  "MOHAMMED SERAJ ANSARI",
-  "MEWANKHRAW MAJAW",
-  "RAJESH KUMAR THAKUR",
-  "SANJAY THAPA",
-  "SAFIRALIN",
-  "ROSHAN",
-  "SICOVONTRITCHZ D THANGKHIEW",
-  "TITU BHOWMICK",
-  "WANHUNLANG KHARSATI",
-  "YUMNAM JACKSON SINGH",
-  "SHANBOR",
-  "EWAN HA I SHYLLA"
-];
+const EMPLOYEE = require('../config/employees');
 
 
 // Utility

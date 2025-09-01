@@ -46,10 +46,20 @@ app.use(cors({
 app.use(helmet());
 
 app.use(express.json());
-
-
-
 app.use('/api/attendance', attendanceRoutes);
+
+
+
+
+
+const { startWeeklyReportJob } = require('./jobs/scheduleWeeklyReport');
+startWeeklyReportJob();
+const { startMonthlyReportJob } = require('./jobs/scheduleMonthlyReport.js');
+startMonthlyReportJob();
+const { startAccountantMonthlyReportJob } = require('./jobs/scheduleAccountantMonthlyReport');
+startAccountantMonthlyReportJob();
+
+
 
 
 
@@ -58,7 +68,7 @@ app.use('/api/attendance', attendanceRoutes);
 // 0 10-20 * * *
 
 // Morning + Early Afternoon: every 5 minutes from 9:00 to 13:55
-cron.schedule('*/5 9-13 * * 1-6', async () => {
+cron.schedule('*/10 9-13 * * 1-6', async () => {
   try {
     console.log('Running attendance sync cron job (office hours)...');
     const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
@@ -71,7 +81,7 @@ cron.schedule('*/5 9-13 * * 1-6', async () => {
 
 
 // Evening: every 5 minutes from 17:00 to 20:55
-cron.schedule('*/5 17-20 * * 1-6', async () => {
+cron.schedule('*/10 17-20 * * 1-6', async () => {
   try {
     console.log('Running attendance sync cron job (office hours)...');
     const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
